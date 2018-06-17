@@ -102,6 +102,12 @@ public class ExtensionLoader<T> {
         return type.isAnnotationPresent(SPI.class);
     }
 
+    /**
+     * 从META-INF/dubbo/
+     * @param type
+     * @param <T>
+     * @return
+     */
     @SuppressWarnings("unchecked")
     public static <T> ExtensionLoader<T> getExtensionLoader(Class<T> type) {
         if (type == null)
@@ -561,6 +567,13 @@ public class ExtensionLoader<T> {
     }
 
     // synchronized in getExtensionClasses
+    /**
+     * SPI模式加载扩展点，从所有类路径下找到：<br/>
+     *	META-INF/dubbo/internal<br/>
+     *	META-INF/dubbo<br/>
+     *	META-INF/services<br/>
+     * 下加载名为当前type的类全名文件内的扩展配置<br/>
+     */
     private Map<String, Class<?>> loadExtensionClasses() {
         final SPI defaultAnnotation = type.getAnnotation(SPI.class);
         if (defaultAnnotation != null) {
@@ -571,6 +584,7 @@ public class ExtensionLoader<T> {
                     throw new IllegalStateException("more than 1 default extension name on extension " + type.getName()
                             + ": " + Arrays.toString(names));
                 }
+                // 默认使用的扩展点实现名，如Protocol下的@SPI("dubbo")，表示缺省条件下默认使用dubbo扩展协议，最后使用到的是DubboProtocol
                 if (names.length == 1) cachedDefaultName = names[0];
             }
         }
@@ -645,6 +659,9 @@ public class ExtensionLoader<T> {
                     type + ", class line: " + clazz.getName() + "), class "
                     + clazz.getName() + "is not subtype of interface.");
         }
+        // 把存在@Adaptive注解的类作为当前类型的扩展点"适配工厂"
+        // 此"适配工厂"会维护当前扩展类型(type)的所有实际扩展对象，用于根据应用需求(配置，如使用哪种协议，默认为dubbo，则Protocol最终获取到的是DubboProtocol扩展)
+        // 如果当前类型下所有的扩展都没有适配类，会在后面动态创建@see createAdaptiveExtensionClass()
         if (clazz.isAnnotationPresent(Adaptive.class)) {
             if (cachedAdaptiveClass == null) {
                 cachedAdaptiveClass = clazz;
@@ -721,14 +738,22 @@ public class ExtensionLoader<T> {
     }
 
     private Class<?> getAdaptiveExtensionClass() {
+        // 前往指定目录加载SPI扩展
         getExtensionClasses();
+        //当前扩展点存在@Adaptive类型的类则直接返回
         if (cachedAdaptiveClass != null) {
             return cachedAdaptiveClass;
         }
+        //否则会通过动态构造代码的方式创建一个名为type.simpleName$Adaptive动态类
         return cachedAdaptiveClass = createAdaptiveExtensionClass();
     }
 
+    /**
+     * 针对不存在扩展适配类的类型，创建一个
+     * @return
+     */
     private Class<?> createAdaptiveExtensionClass() {
+        // 组装code 类名为type.getSimpleName()).append("$Adaptive")
         String code = createAdaptiveExtensionClassCode();
         ClassLoader classLoader = findClassLoader();
         com.alibaba.dubbo.common.compiler.Compiler compiler = ExtensionLoader.getExtensionLoader(com.alibaba.dubbo.common.compiler.Compiler.class).getAdaptiveExtension();
