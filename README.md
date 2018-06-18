@@ -36,6 +36,15 @@ dubbo中通过`onApplicationEvent`方法中的**export**实现自身服务的启
     源码有丰富的单元测试，先从provider开始，找一个服务提供者(如`ValidationProvider`)，debug模式运行main方法逐步跟踪即可。正常启动完成后，
     再找到对应的消费者以debug模式跟踪调试，最开始可能会对ExtensionLoader的嵌套调用很迷惑，多走两遍即可
 
+# 遇到的问题
+
+1. muticast注册协议消费者获取服务失败
+
+    问题场景：调试使用multicast注册(UDP广播实现)服务URL时，启动消费者时总是无法加入广播组(代码位置：`MulticastRegistry下的90行--mutilcastSocket.joinGroup(mutilcastAddress);`，
+异常信息：`java.lang.IllegalStateException: Can't assign requested address`)
+
+    解决方案：虚拟机启动参数增加参数`-Djava.net.preferIPv4Stack=true`
+    造成原因：系统开启了IPv6协议，程序获取到了IPv6的IP地址
 
 
 # Apache Dubbo (incubating) Project

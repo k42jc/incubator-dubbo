@@ -233,7 +233,7 @@ public class MulticastRegistry extends FailbackRegistry {
         }/* else if (msg.startsWith(UNSUBSCRIBE)) {
         }*/
     }
-
+    // 通过UDP广播当前服务的URL唯一标志
     private void broadcast(String msg) {
         if (logger.isInfoEnabled()) {
             logger.info("Send broadcast message: " + msg + " to " + mutilcastAddress + ":" + mutilcastPort);

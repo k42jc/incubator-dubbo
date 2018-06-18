@@ -85,7 +85,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
     // interface proxy reference
     private transient volatile T ref;
     private transient volatile Invoker<?> invoker;
-    private transient volatile boolean initialized;
+    private transient volatile boolean initialized = false;
     private transient volatile boolean destroyed;
     @SuppressWarnings("unused")
     private final Object finalizerGuardian = new Object() {
