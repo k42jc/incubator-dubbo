@@ -1,1 +1,2 @@
 dubbo=com.alibaba.dubbo.monitor.dubbo.DubboMonitorFactory
+adaptive=com.alibaba.dubbo.monitor.adaptive.AdaptiveMonitorFactory
