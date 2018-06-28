@@ -29,7 +29,11 @@ import com.alibaba.dubbo.config.spring.ServiceBean;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
- * DubboNamespaceHandler
+ * DubboNamespaceHandler<br/>
+ * <dubbo:xxx></dubbo:xxx>标签扩展实际初始化的bean<br/>
+ * 使用了spring容器beanDefinition扩展，在<br/>
+ * @see DefaultNamespaceHandlerResolver <br/>
+ * 中定义了使用META-INF/spring.handlers下增加扩展点，SPI模式
  *
  * @export
  */
@@ -41,6 +45,7 @@ public class DubboNamespaceHandler extends NamespaceHandlerSupport {
 
     @Override
     public void init() {
+        // <dubbo:application name="xxx"/>
         registerBeanDefinitionParser("application", new DubboBeanDefinitionParser(ApplicationConfig.class, true));
         registerBeanDefinitionParser("module", new DubboBeanDefinitionParser(ModuleConfig.class, true));
         registerBeanDefinitionParser("registry", new DubboBeanDefinitionParser(RegistryConfig.class, true));
