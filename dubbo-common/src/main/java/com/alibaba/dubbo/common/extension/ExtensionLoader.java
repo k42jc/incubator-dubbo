@@ -590,9 +590,9 @@ public class ExtensionLoader<T> {
         }
 
         Map<String, Class<?>> extensionClasses = new HashMap<String, Class<?>>();
-        loadDirectory(extensionClasses, DUBBO_INTERNAL_DIRECTORY);
-        loadDirectory(extensionClasses, DUBBO_DIRECTORY);
-        loadDirectory(extensionClasses, SERVICES_DIRECTORY);
+        loadDirectory(extensionClasses, DUBBO_INTERNAL_DIRECTORY);// 加载META-INF/dubbo/internal下的内部扩展
+        loadDirectory(extensionClasses, DUBBO_DIRECTORY);// 加载META-INF/dubbo下的扩展配置
+        loadDirectory(extensionClasses, SERVICES_DIRECTORY);// 加载META-INF/services配置的扩展
         return extensionClasses;
     }
 
@@ -618,6 +618,12 @@ public class ExtensionLoader<T> {
         }
     }
 
+    /**
+     * 逐行读取spi配置
+     * @param extensionClasses
+     * @param classLoader
+     * @param resourceURL
+     */
     private void loadResource(Map<String, Class<?>> extensionClasses, ClassLoader classLoader, java.net.URL resourceURL) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(resourceURL.openStream(), "utf-8"));

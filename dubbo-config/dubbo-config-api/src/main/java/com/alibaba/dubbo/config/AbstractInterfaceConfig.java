@@ -20,11 +20,7 @@ import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.URL;
 import com.alibaba.dubbo.common.Version;
 import com.alibaba.dubbo.common.extension.ExtensionLoader;
-import com.alibaba.dubbo.common.utils.ConfigUtils;
-import com.alibaba.dubbo.common.utils.NetUtils;
-import com.alibaba.dubbo.common.utils.ReflectUtils;
-import com.alibaba.dubbo.common.utils.StringUtils;
-import com.alibaba.dubbo.common.utils.UrlUtils;
+import com.alibaba.dubbo.common.utils.*;
 import com.alibaba.dubbo.config.support.Parameter;
 import com.alibaba.dubbo.monitor.MonitorFactory;
 import com.alibaba.dubbo.monitor.MonitorService;
@@ -155,7 +151,17 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
             }
         }
     }
-
+    /*
+     *将关键配置转换为URL配置 格式为：
+     *  <dubbo:registry 注册地址
+     *  path,值为：com.alibaba.dubbo.registry.RegistryService类名
+     *  <dubbo:application 配置名
+     *  当前dubbo版本
+     *  当前java进程id
+     *  <dubbo:registry 配置的协议
+     *  当前时间戳
+     *  registry://224.5.6.7:1234/com.alibaba.dubbo.registry.RegistryService?application=validation-provider&dubbo=2.0.2&pid=17184&registry=multicast&timestamp=1528770146348
+     */
     protected List<URL> loadRegistries(boolean provider) {
         checkRegistry();
         List<URL> registryList = new ArrayList<URL>();
