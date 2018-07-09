@@ -514,4 +514,9 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
         this.scope = scope;
     }
 
+    @Override
+    public String toString() {
+        System.out.println(this.getClass().getName() + "toString 方法调用");
+        return "";
+    }
 }

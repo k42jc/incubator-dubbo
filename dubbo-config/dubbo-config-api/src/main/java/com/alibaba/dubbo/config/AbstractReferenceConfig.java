@@ -29,6 +29,12 @@ import com.alibaba.dubbo.rpc.support.ProtocolUtils;
  */
 public abstract class AbstractReferenceConfig extends AbstractInterfaceConfig {
 
+    @Override
+    public String toString() {
+        System.out.println(this.getClass().getName() + "toString 方法调用");
+        return "";
+    }
+
     private static final long serialVersionUID = -2786526984373031126L;
 
     // ======== Reference config default values, will take effect if reference's attribute is not set  ========

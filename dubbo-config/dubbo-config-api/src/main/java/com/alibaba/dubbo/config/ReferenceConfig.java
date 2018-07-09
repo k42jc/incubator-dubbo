@@ -110,6 +110,16 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
     public ReferenceConfig() {
     }
 
+    @Override
+    public String toString() {
+        System.out.println("验证IDE在debug过程中到达某一断点会层级调用对象以及父级对象的toString方法");
+        System.out.println(this.getClass().getName() + "toString 方法调用");
+        System.out.println("实际调用的是当前断点类的toString()方法和顶级父类的toString方法，打印的this.class.getName()是下级子类，也就是说真正调用方是子类");
+        System.out.println("所以在ReferenceConfig的init方法上打断点会调用顶级父类AbstractConfig的toString方法，因为实际调用方是本类，再结合AbstractConfig的toString源码不难发现会循环反射调用本类的所有方法，包括init方法本身");
+        System.out.println("所以造成debug过程init方法被多次调用并且调用线程还看不出异常，莫名其妙的私有参数initialized就被设置为true了，并且后序服务都已经启动过一遍了");
+        return "";
+    }
+
     public ReferenceConfig(Reference reference) {
         appendAnnotation(Reference.class, reference);
     }

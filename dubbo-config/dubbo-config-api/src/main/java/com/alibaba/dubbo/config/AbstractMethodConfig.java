@@ -168,4 +168,9 @@ public abstract class AbstractMethodConfig extends AbstractConfig {
         this.parameters = parameters;
     }
 
+    @Override
+    public String toString() {
+        System.out.println(this.getClass().getName() + "toString 方法调用");
+        return "";
+    }
 }

@@ -448,9 +448,12 @@ public abstract class AbstractConfig implements Serializable {
     @Override
     public String toString() {
         try {
+            System.out.println(this.getClass().getName() + " abstractConfig toString 方法调用");
             StringBuilder buf = new StringBuilder();
             buf.append("<dubbo:");
             buf.append(getTagName(getClass()));
+            // IDE在debug模式下每到一个断点都会调用当前类以及父类的toString方法
+            // 又因为当前toString的实现会反射调用对应类的所有方法，影响调试时流程的判断，在源码阅读与调试过程最好先注释掉
             Method[] methods = getClass().getMethods();
             for (Method method : methods) {
                 try {
